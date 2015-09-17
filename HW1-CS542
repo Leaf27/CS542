@@ -1,0 +1,47 @@
+file tempfile;
+hashtable table{
+ 	new hashtable;
+	if(file not found){
+     create a new file (cs542.db);
+    }
+    else{
+    downloading value from file);
+    }
+}
+
+main{
+	
+}
+
+put{
+	logrecord.setmessage(start put);
+	   SYNCHRONIZE();
+		put new value into hashtable();
+		copy the updated hashtable into tempfile;
+	    if(tempfile.length<=5*1024*1024 and lengOfAllValues(hashtable)) <=4*1024*1024{   
+		    print(result);
+		    rename(cs542 to tempAgain);
+		    rename(tempfile to cs542);
+		    rename( tempAgain to tempfile );
+		}
+		else {
+		print(failure);
+	 }
+		logrecord.setmessage(finish put); 
+}
+
+GET(INT KEY){
+     SYNCHRONIZE();
+	HASHTABL.get();
+}
+
+remove(key){
+    logrecord.setmessage(start remove); 
+	SYNCHRONIZE();
+    print(hashtable.remove());
+	copy the updated hashtable into tempfile;
+	rename(cs542 to tempAgain);
+	 rename(tempfile to cs542);
+	rename( tempAgain to tempfile );
+	logrecord.setmessage(finish remove); 
+}
