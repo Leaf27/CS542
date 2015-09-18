@@ -14,7 +14,6 @@ main{
 }
 
 put{
-	logrecord.setmessage(start put);
 	   SYNCHRONIZE();
 		put new value into hashtable();
 		copy the updated hashtable into tempfile;
@@ -27,21 +26,21 @@ put{
 		else {
 		print(failure);
 	 }
-		logrecord.setmessage(finish put); 
+		
 }
 
 GET(INT KEY){
      SYNCHRONIZE();
-	HASHTABL.get();
+	hashtable.get();
 }
 
 remove(key){
-    logrecord.setmessage(start remove); 
+   
 	SYNCHRONIZE();
     print(hashtable.remove());
 	copy the updated hashtable into tempfile;
 	rename(cs542 to tempAgain);
 	 rename(tempfile to cs542);
 	rename( tempAgain to tempfile );
-	logrecord.setmessage(finish remove); 
+
 }
