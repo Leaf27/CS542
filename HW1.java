@@ -45,8 +45,6 @@ public class HW1 {
      // stores data under the given key
      public void put(int key, byte[] value){ 	
     	     int prevLength=0;
-    	     long startTime=System.currentTimeMillis();
-    	     System.out.println("The put method starts at "+startTime);
     	     w.lock();
     	     if(data.containsKey(key)){
     	    	 prevLength=data.get(key).length;
@@ -56,47 +54,43 @@ public class HW1 {
     		 if(tempFile.length()<=MAX_FILE_LENGTH&&(value.length+dataLength-prevLength)<=MAX_DATA_LENGTH){
     			 exchangeFileName();	 
     			 dataLength=value.length+dataLength-prevLength;
+    			 System.out.println("we put "+key+" and its associated value into the official file!");
     		 }
     		 else {
-    			 System.out.println("The file does not have enough room for the new data");
+    			 System.out.println("The file does not have enough room for data of which key is: "+key);
     		 }
     		 w.unlock();
-    		 long endTime=System.currentTimeMillis();
-    		 System.out.println("The put method ends at "+endTime);
-    		 System.out.println("we took "+(endTime-startTime)+" milliseconds to run the put method!");
+    		 
     	 
      }
      // retrieves data for a given key
      public byte[] get(int key){
-    	 long startTime=System.currentTimeMillis();
-	     System.out.println("The get method starts at "+startTime);   	 
-    	 long endTime=System.currentTimeMillis();
-		 System.out.println("The get method ends at "+endTime);
-		 System.out.println("we took "+(endTime-startTime)+" milliseconds to run the get method!");
+    	 byte[] result=data.get(key);
 		 r.lock();
-		 try{return data.get(key);}
+		 try{
+			 if(result!=null){
+			 System.out.println("We got the value of length: "+data.get(key).length);
+			 return data.get(key);}
+			 else System.out.println("We did not find the key");
+			 return result;
+		 }
 		 finally{r.unlock();}
      }
      
      // deletes the key-value pair for a given key
      public void remove(int key){
-    	 long startTime=System.currentTimeMillis();
-	     System.out.println("The remove method starts at "+startTime);
 	     w.lock();
     	 byte[] removeElement=data.remove(key);
     	 if(removeElement==null){
     		 System.out.println("This key does not exist!");
     	 }
     	 else{
-    		 System.out.println("Removing successes!");
+    		 System.out.println("Removing "+key+" and its associated data successes!");
     		 HashMapToFile();
     		 dataLength-=removeElement.length;
     		 exchangeFileName();
     	 }
-    	 w.unlock();
-    	 long endTime=System.currentTimeMillis();
-		 System.out.println("The remove method ends at "+endTime);
-		 System.out.println("we took "+(endTime-startTime)+"milliseconds to run the remove method!");   	 
+    	 w.unlock(); 	 
      }
      
      // read the officialFile file into HashMap
@@ -125,7 +119,7 @@ public class HW1 {
     	 }
     	 else{
     		 officialFile.createNewFile();
-    		 System.out.println("I do not find the file, so I create the official file!");
+    		 System.out.println("I cannot find the file, so I create an official file!");
     	 }
     	 
      }
@@ -140,12 +134,10 @@ public class HW1 {
     		 Map.Entry<Integer,byte[]> pairs=it.next();
     		 out.write(pairs.getKey()+"\n");
     		 out.write(pairs.getValue()+"\n");   		 
-    	 } 
-    	 System.out.println("Reading data to tempFile success!");
+    	 }
     	 }
     	 catch(IOException e){
     		 e.getMessage();
-    		 System.out.println("Reading data to tempFile fails!");
     	 }
      }
     
@@ -156,7 +148,6 @@ public class HW1 {
     	 }
     	 catch(IOException e){
     		 e.getMessage();
-    		 System.out.println("Exchanging names of files fails!");
     	 }
      } 
 }
