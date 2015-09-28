@@ -54,7 +54,7 @@ public class HW1 {
      	In order to track length of actual data, the method records the length of previous value if exists and 
      	updated length=length of previous length-length of previous data(0 if the key was not in the file before calling the put method) + length of new data.
      	After we put the new key-value pair into data hashMap, we synchronize the hashMap and tempFile. If the tempfile meets the length requirements, 
-     	then we rename the temFile cs542.    	
+     	then we rename the tempFile cs542.    	
        
       */
      public void put(int key, byte[] value){ 	
@@ -80,7 +80,7 @@ public class HW1 {
     		 
     	 
      }
-     // retrieves data for a given key
+     // retrieves data for a given key. If found the key, print out length of the byte[]. Else, print out "we did not find the key".
      public byte[] get(int key){
     	 byte[] result=data.get(key);
 		 r.lock();
@@ -94,7 +94,8 @@ public class HW1 {
 		 finally{r.unlock();}
      }
      
-     // deletes the key-value pair for a given key
+     // deletes the key-value pair for a given key. If the key does not exist, print out "this key does not exist!". 
+     //Else, print out the removed key and the associated value.
      public void remove(int key){
 	     w.lock();
     	 byte[] removeElement=data.remove(key);
@@ -110,7 +111,9 @@ public class HW1 {
     	 w.unlock(); 	 
      }
      
-     // read the officialFile file into HashMap
+     /* read the officialFile file into HashMap and track amount of key-value pairs. If the cs542 file does not exist, then we will create a file named cs542.
+      
+     */
      private void fileToHashMap() throws IOException{
     	 if(officialFile.exists()){
     		 FileInputStream fis=new FileInputStream(officialFile);

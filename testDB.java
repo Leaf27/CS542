@@ -9,20 +9,26 @@ public class testDB {
 				for(int i=0;i<length/2;i++){
 					halfData[i]=1;
 				}
+				// put key 1,2 and their associated value into HashMap
 				test.put(1, halfData);
 				test.put(2, halfData);
+				// starts concurrency test
 			    System.out.println("Now starts test of concurrency:");
 			    concurrency();
+			    // starts fragmentation test
 			    System.out.println("Now starts test of fragmentation: ");	
 			    fragmentation();
 	    }
 		
+		/* The main thread does a Remove() and the new thread t does a Get() with the same key a millisecond later.
+		 * 
+		 */
 		private static void concurrency() throws InterruptedException{
-			 byte[] halfData=new byte[length/2];
-			// create a byte[] of length 1024*1024/2;	 
+			 byte[] halfData=new byte[length/2];	 
 			for(int i=0;i<length/2;i++){
 				halfData[i]=1;
 			}
+			// create a new thread to get value of which key is 1.
 			Thread t=new Thread(){
 				public void run(){
 					System.out.println("Another thread is running!");
@@ -36,18 +42,24 @@ public class testDB {
 					}			
 			}
 			};
+			// start the new thread
 			t.start();
-			test.remove(1);		
+			// remove key-value pair of which key is 1.
+			test.remove(1);	
+			// let the main thread wait 1000 milliseconds so that the new thread t can be finished before starting fragmentation method.
 			t.join(1000);
 		}	
 		
+		/* Put() 4 values, byte arrays of 1 MB each, with keys A, B, C and D. Remove key B. Put() ½ MB in size for key E. 
+		 * Validate that a Put() 1 MB in size for key F fails. Remove C and now validate that a Put() 1 MB in size for key G succeeds. 
+		 * Remove E and try Put() 1 MB in size for key H. With a naive implementation, it will fail even though there is room in store.db. 
+		 * An extra bonus point if you can modify your code such that Put("H", …) succeeds. 
+		 */
 		private static void fragmentation(){
-			// create a byte[] of length 1024*1024;
 			   byte[] testData=new byte[length];					 
 				for(int i=0;i<length/2;i++){
 					testData[i]=1;
 				}
-				// create a byte[] of length 1024*1024/2;
 				byte[] halfData=new byte[length/2];					 
 				for(int i=0;i<length/2;i++){
 					halfData[i]=1;
