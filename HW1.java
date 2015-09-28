@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
@@ -19,32 +20,46 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class HW1 {
 	 private  static HW1 singleton = new HW1();
+	 // create two file objects:officialFile named cs542.db, tempFile named tempFile.db
      private  File tempFile=new File("tempFile.db");
      private  File officialFile = new File("cs542.db");
+     // create a HashMap storing the key-value pairs
      private  HashMap<Integer,byte[]> data=new HashMap<Integer,byte[]>(); 
+     // declare the max file length. According Prof's requirements, the max file length equals 5MB
      private final int MAX_FILE_LENGTH=5*1024*1024;
+  // declare the max data length. According Prof's requirements, actual data length should equal to 4MB
      private final int MAX_DATA_LENGTH=4*1024*1024;
+     // count how many key-value pairs.
      private int dataLength=0;
+     // create writelock and readlock
      private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
      private final Lock r = rwl.readLock();
      private final Lock w = rwl.writeLock();
-    
+    /* initiate HW1 class and at the same time, read data in cs542.db into data HashMap.
+     * The HW1 constructor is private so that there is only one HW1 object that can be created which is essential to readWriteLock.
+    */ 
      private HW1(){
     		 try {
 				fileToHashMap();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
      }
-     
+     // This method is used when testDB wants to get the only one HW1 object.
      public static synchronized HW1 getInstance(){
     	 return singleton;
      }
      
-     // stores data under the given key
+     /* stores data under the given key.if there is any key in cs542 file as same as the given key, previous value will be replaced by the new value. 
+     	In order to track length of actual data, the method records the length of previous value if exists and 
+     	updated length=length of previous length-length of previous data(0 if the key was not in the file before calling the put method) + length of new data.
+     	After we put the new key-value pair into data hashMap, we synchronize the hashMap and tempFile. If the tempfile meets the length requirements, 
+     	then we rename the temFile cs542.    	
+       
+      */
      public void put(int key, byte[] value){ 	
     	     int prevLength=0;
+    	     // writelock to lock the HW1 object.
     	     w.lock();
     	     if(data.containsKey(key)){
     	    	 prevLength=data.get(key).length;
@@ -54,11 +69,13 @@ public class HW1 {
     		 if(tempFile.length()<=MAX_FILE_LENGTH&&(value.length+dataLength-prevLength)<=MAX_DATA_LENGTH){
     			 exchangeFileName();	 
     			 dataLength=value.length+dataLength-prevLength;
-    			 System.out.println("we put "+key+" and its associated value into the official file!");
+    			 Double toBeTruncated = new Double((double)value.length/(1024*1024));
+    			 System.out.println("we put "+key+" and its value of "+toBeTruncated.toString()+" MB into the official file!");
     		 }
     		 else {
     			 System.out.println("The file does not have enough room for data of which key is: "+key);
     		 }
+    		 //unlock the HW1 object
     		 w.unlock();
     		 
     	 
@@ -71,7 +88,7 @@ public class HW1 {
 			 if(result!=null){
 			 System.out.println("We got the value of length: "+data.get(key).length);
 			 return data.get(key);}
-			 else System.out.println("We did not find the key");
+			 else System.out.println("We did not find the key: "+key);
 			 return result;
 		 }
 		 finally{r.unlock();}

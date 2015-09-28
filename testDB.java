@@ -25,42 +25,54 @@ public class testDB {
 			}
 			Thread t=new Thread(){
 				public void run(){
+					System.out.println("Another thread is running!");
 					 byte[] testData=new byte[length];
 					// create a byte[] of length 1024*1024;
 					for(int i=0;i<length;i++){
 						testData[i]=1;
-					}
-					System.out.println("Another thread is running!");			
+					}			
 					if(test.get(1)!=null) {
 						System.out.println("This is length of the '1' element:"+length);
 					}			
 			}
 			};
 			t.start();
-			test.remove(1);			
+			test.remove(1);		
+			t.join(1000);
 		}	
 		
 		private static void fragmentation(){
-			   byte[] testData=new byte[length];
-				// create a byte[] of length 1024*1024/2;	 
+			// create a byte[] of length 1024*1024;
+			   byte[] testData=new byte[length];					 
 				for(int i=0;i<length/2;i++){
 					testData[i]=1;
 				}
-				byte[] halfData=new byte[length/2];
-				// create a byte[] of length 1024*1024/2;	 
+				// create a byte[] of length 1024*1024/2;
+				byte[] halfData=new byte[length/2];					 
 				for(int i=0;i<length/2;i++){
 					halfData[i]=1;
 				}
+			// put key A and it's associated value, byte array of 1 MB, into file!
 			  test.put(1,testData);
+			// put key B and it's associated value, byte array of 1 MB, into file!
 			  test.put(2,testData);
+			// put key C and it's associated value, byte array of 1 MB, into file!
 			  test.put(3,testData);
-			  test.put(4,testData);		
+			// put key D and it's associated value, byte array of 1 MB, into file!
+			  test.put(4,testData);
+			//Remove key B
 			  test.remove(2);
+			 //Put() ½ MB in size for key E
 			  test.put(5, halfData);
+			  // Put() 1 MB in size for key F and check the result!
 			  test.put(6, testData);
+			  //Remove C
 			  test.remove(3);
+			  //Put() 1 MB in size for key G  and check the result!
 			  test.put(7, testData);
+			  //Remove E
 			  test.remove(5);
+			  //Put() 1 MB in size for key H and check the result!
 			  test.put(8, testData);			  
 		}
 	}
