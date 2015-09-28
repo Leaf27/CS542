@@ -5,6 +5,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -65,14 +67,16 @@ public class HW1 {
     	    	 prevLength=data.get(key).length;
     	     }
     		 data.put(key, value);
-    		 HashMapToFile();  		 
+    		 HashMapToFile(); 
     		 if(tempFile.length()<=MAX_FILE_LENGTH&&(value.length+dataLength-prevLength)<=MAX_DATA_LENGTH){
     			 exchangeFileName();	 
     			 dataLength=value.length+dataLength-prevLength;
     			 Double toBeTruncated = new Double((double)value.length/(1024*1024));
     			 System.out.println("we put "+key+" and its value of "+toBeTruncated.toString()+" MB into the official file!");
+    			 System.out.println("");
     		 }
     		 else {
+    			 data.remove(key);
     			 System.out.println("The file does not have enough room for data of which key is: "+key);
     		 }
     		 //unlock the HW1 object
@@ -103,10 +107,12 @@ public class HW1 {
     		 System.out.println("This key does not exist!");
     	 }
     	 else{
-    		 System.out.println("Removing "+key+" and its associated data successes!");
+    		 Double toBeTruncated = new Double((double)(removeElement.length)/(1024*1024));    		
     		 HashMapToFile();
     		 dataLength-=removeElement.length;
     		 exchangeFileName();
+    		 System.out.println("Removing "+key+" and its associated data of "+ toBeTruncated.toString()+" MB successes!");
+			 System.out.println("");
     	 }
     	 w.unlock(); 	 
      }
@@ -115,27 +121,31 @@ public class HW1 {
       
      */
      private void fileToHashMap() throws IOException{
+    	 System.out.println("reading data from file into HashMap is started!");
     	 if(officialFile.exists()){
-    		 FileInputStream fis=new FileInputStream(officialFile);
-    		 BufferedReader br=new BufferedReader(new InputStreamReader(fis,"UTF-8"));
+    		 FileReader fis=new FileReader(officialFile);
+    		 BufferedReader br=new BufferedReader(fis);
     		 String line=null;
     		 int count=0;
     		 int key=0;
     		 int length=0;
     		 while((line=br.readLine())!=null){
+    			 System.out.println("This is the line: "+ line);   			 
     			 if(count==0) length=Integer.parseInt(line);
     			 else if((count%2)==1) {
     				 key=Integer.parseInt(line);
-    				 data.put(key,null);   				 
+    				 data.put(key,null); 
+    				 System.out.println("I am reading key: "+key);
     			 }
     			 else {
     				 data.put(key, line.getBytes());
-    				 dataLength+=line.length();   				 
+    				 dataLength+=line.length();  
+    				 System.out.println("I am reading value: "+line.length());
     			 }
     			 count++;
     		 }
     		 br.close();
-    		 System.out.println("I am reading data from file into HashMap!");
+    		 System.out.println("reading data from file into HashMap is finished!");
     	 }
     	 else{
     		 officialFile.createNewFile();
@@ -146,19 +156,25 @@ public class HW1 {
      // write the HashMap into tempFile
      private void HashMapToFile(){
     	 try{
-         FileOutputStream fos=new FileOutputStream(tempFile,false);
-    	 BufferedWriter out=new BufferedWriter(new OutputStreamWriter(fos,"UTF-8"));
-    	 Iterator<Entry<Integer,byte[]>> it=data.entrySet().iterator();
-    	 out.write(data.size());
-    	 while(it.hasNext()){
-    		 Map.Entry<Integer,byte[]> pairs=it.next();
-    		 out.write(pairs.getKey()+"\n");
-    		 out.write(pairs.getValue()+"\n");   		 
+    		 FileWriter fos=new FileWriter(tempFile,false);
+    		 BufferedWriter out=new BufferedWriter(fos);
+    		 Iterator<Entry<Integer,byte[]>> it=data.entrySet().iterator();
+    		 if(data.size()!=0){   		 
+    			 out.write(data.size()+"\n");
+    			 while(it.hasNext()){
+    				 Map.Entry<Integer,byte[]> pairs=it.next();
+    				 out.write(pairs.getKey()+"\n");
+    				 for(int i=0;i<pairs.getValue().length;i++){
+    					 out.write(pairs.getValue()[i]); 			 
+    			}
+    			out.write("\n"); 
+    	         }
+    	 out.close();
     	 }
     	 }
     	 catch(IOException e){
     		 e.getMessage();
-    	 }
+    	 }    	 
      }
     
      // exchange names of tempFile and officialFile

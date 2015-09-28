@@ -6,12 +6,11 @@ public class testDB {
 		public static void main(String[] args) throws InterruptedException{
 			    byte[] halfData=new byte[length/2];
 				// create a byte[] of length 1024*1024/2;	 
-				for(int i=0;i<length/2;i++){
+				for(int i=0;i<halfData.length;i++){
 					halfData[i]=1;
 				}
 				// put key 1,2 and their associated value into HashMap
-				test.put(1, halfData);
-				test.put(2, halfData);
+				test.put(1, halfData);			
 				// starts concurrency test
 			    System.out.println("Now starts test of concurrency:");
 			    concurrency();
@@ -57,7 +56,7 @@ public class testDB {
 		 */
 		private static void fragmentation(){
 			   byte[] testData=new byte[length];					 
-				for(int i=0;i<length/2;i++){
+				for(int i=0;i<length;i++){
 					testData[i]=1;
 				}
 				byte[] halfData=new byte[length/2];					 
