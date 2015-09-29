@@ -4,12 +4,10 @@ public class testDB {
 	static int length=1024*1024;
 	
 		public static void main(String[] args) throws InterruptedException{
-			    byte[] halfData=new byte[length/2];
-				// create a byte[] of length 1024*1024/2;	 
+			    byte[] halfData=new byte[length/2];	 
 				for(int i=0;i<halfData.length;i++){
 					halfData[i]=1;
 				}
-				// put key 1,2 and their associated value into HashMap
 				test.put(1, halfData);			
 				// starts concurrency test
 			    System.out.println("Now starts test of concurrency:");
@@ -30,21 +28,18 @@ public class testDB {
 			// create a new thread to get value of which key is 1.
 			Thread t=new Thread(){
 				public void run(){
-					System.out.println("Another thread is running!");
-					 byte[] testData=new byte[length];
-					// create a byte[] of length 1024*1024;
-					for(int i=0;i<length;i++){
-						testData[i]=1;
-					}			
-					if(test.get(1)!=null) {
-						System.out.println("This is length of the '1' element:"+length);
+					System.out.println("Another thread is running!");	
+					byte[] result=test.get(1);
+					if(result!=null) {
+						System.out.println("This is length of the '1' element:"+result.length);
 					}			
 			}
 			};
 			// start the new thread
-			t.start();
+			t.start();			
 			// remove key-value pair of which key is 1.
 			test.remove(1);	
+			t.join(1);
 			// let the main thread wait 1000 milliseconds so that the new thread t can be finished before starting fragmentation method.
 			t.join(1000);
 		}	

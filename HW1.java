@@ -31,7 +31,7 @@ public class HW1 {
      private  HashMap<Integer,byte[]> data=new HashMap<Integer,byte[]>(); 
      // declare the max file length. According Prof's requirements, the max file length equals 5MB
      private final int MAX_FILE_LENGTH=5*1024*1024;
-  // declare the max data length. According Prof's requirements, actual data length should equal to 4MB
+     // declare the max data length. According Prof's requirements, actual data length should equal to 4MB
      private final int MAX_DATA_LENGTH=4*1024*1024;
      // count how many key-value pairs.
      private int dataLength=0;
@@ -93,15 +93,18 @@ public class HW1 {
 		 try{
 			 if(result!=null){
 			 System.out.println("We got the value of length: "+data.get(key).length);
-			 return data.get(key);}
+			 return data.get(key);
+            }
 			 else System.out.println("We did not find the key: "+key);
 			 return result;
 		 }
 		 finally{r.unlock();}
      }
      
-     // deletes the key-value pair for a given key. If the key does not exist, print out "this key does not exist!". 
-     //Else, print out the removed key and the associated value.
+     /* deletes the key-value pair for a given key. If the key does not exist, print out "this key does not exist!". 
+        Else, remove the pair from HashMap and write the HashMap into tempFile, then rename tempfile cs542. 
+        Finally, print out the removed key and size of the associated value. 
+     */
      public void remove(int key){
 	     w.lock();
     	 byte[] removeElement=data.remove(key);
@@ -119,7 +122,9 @@ public class HW1 {
     	 w.unlock(); 	 
      }
      
-     /* read the officialFile file into HashMap and track amount of key-value pairs. If the cs542 file does not exist, then we will create a file named cs542.
+     /* read the cs542 file into HashMap and track amount of key-value pairs. Each time when inputing a new line, check
+     whether this line contains a key or a value or amout of key-value pairs. If the cs542 file does not exist, 
+     then we will create a file named cs542.
       
      */
      private void fileToHashMap() throws IOException{
@@ -155,7 +160,7 @@ public class HW1 {
     	 }
     	 
      }
-     // write the HashMap into tempFile
+     // write the HashMap which contains the updated data into tempFile
      private void HashMapToFile(){
     	 try{
     		 FileWriter fos=new FileWriter(tempFile,false);
@@ -179,7 +184,7 @@ public class HW1 {
     	 }    	 
      }
     
-     // exchange names of tempFile and officialFile
+     // change tempfile's name to cs542.db
      private void exchangeFileName(){
     	 try{
     	 Files.move(tempFile.toPath(), officialFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
