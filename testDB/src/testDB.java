@@ -1,13 +1,20 @@
+import java.io.File;
+import showCS542.ShowCS542;
+
+
+
 public class testDB {
 	static HW1 test=HW1.getInstance();
 	static int length=1024*1024;
+	static File testFile=new File("test.db");
 	
 		public static void main(String[] args) throws InterruptedException{
 			    byte[] halfData=new byte[length/2];	 
 				for(int i=0;i<halfData.length;i++){
 					halfData[i]=1;
 				}
-				test.put(1, halfData);			
+				test.put(1,halfData);
+				display(test.getFile());
 				// starts concurrency 
 			    System.out.println("Now starts test of concurrency:");
 			    concurrency();
