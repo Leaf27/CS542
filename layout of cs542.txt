@@ -1,4 +1,4 @@
-Layout of s542
+Layout of CS542.db
 {
 4\n       	 //amount of key-value pairs
 1\n      	 //the first key
