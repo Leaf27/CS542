@@ -22,9 +22,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class HW1 {
 	 private  static HW1 singleton = new HW1();
 	 // create two file objects:officialFile named cs542.db, tempFile named tempFile.db
-     private  static File tempFile=new File("../tempFile.db");
-     private  static File officialFile = new File("../cs542.db");
-     
+     private   File tempFile=new File("../tempFile.db");
+     private   File officialFile = new File("../cs542.db");    
      // create a HashMap storing the key-value pairs
      private  HashMap<Integer,byte[]> data=new HashMap<Integer,byte[]>(); 
      // declare the max file length. According Prof's requirements, the max file length equals 5MB

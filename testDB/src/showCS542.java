@@ -4,7 +4,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class showCS542 {
-        public void display(File file) throws IOException{
+        public synchronized static void display(File file) throws IOException{
         	 System.out.println("This is the layout of CS542: ");
         	 if(file.exists()){
         		 FileReader fis=new FileReader(file);
@@ -22,6 +22,7 @@ public class showCS542 {
         			 count++;
         		 }
         		 if(count==0) System.out.println("CS542 is empty!");
+        		 System.out.println("");
         		 br.close();
         	 }
         	 else{
