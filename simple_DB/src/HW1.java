@@ -72,7 +72,6 @@ public class HW1 {
     			 dataLength=value.length+dataLength-prevLength;
     			 Double toBeTruncated = new Double((double)value.length/(1024*1024));
     			 System.out.println("we put "+key+" and its value of "+toBeTruncated.toString()+" MB into the official file!");
-    			 System.out.println("");
     		 }
     		 else {
     			 data.remove(key);
@@ -114,7 +113,6 @@ public class HW1 {
     		 dataLength-=removeElement.length;
     		 exchangeFileName();
     		 System.out.println("Removing "+key+" and its associated data of "+ toBeTruncated.toString()+" MB successes!");
-			 System.out.println("");
     	 }
     	 w.unlock(); 	 
      }
