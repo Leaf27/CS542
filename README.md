@@ -1,5 +1,5 @@
 # CS542
-used for homework of CS 542, 2015 fall<br>
+used for homework of DataBase system.<br>
 
 Team Member:<br>
 Huan Ye, hye@wpi.edu <br>
